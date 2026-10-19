@@ -10,3 +10,10 @@
 .card{border-top:3px solid var(--purple)}
 .btn-white{color:#500878}
 .site-nav a[aria-current]{border-bottom:2px solid var(--purple)}
+
+/* Center the last two values in the five-value grid. */
+.section:has(> .cards > .card:nth-child(5)) > .cards > .card:nth-child(4){grid-column:1 / 2}
+.section:has(> .cards > .card:nth-child(5)) > .cards > .card:nth-child(5){grid-column:2 / 3}
+@media(min-width:801px){.section:has(> .cards > .card:nth-child(5)) > .cards{grid-template-columns:repeat(6,minmax(0,1fr))}.section:has(> .cards > .card:nth-child(5)) > .cards > .card{grid-column:span 2}.section:has(> .cards > .card:nth-child(5)) > .cards > .card:nth-child(4){grid-column:2 / span 2}.section:has(> .cards > .card:nth-child(5)) > .cards > .card:nth-child(5){grid-column:4 / span 2}}
+@media(max-width:800px){.section:has(> .cards > .card:nth-child(5)) > .cards > .card:nth-child(4),.section:has(> .cards > .card:nth-child(5)) > .cards > .card:nth-child(5){grid-column:auto}}
+.philanthropy-events .photo-slot,.officer-grid .photo-slot{min-height:220px}.officer-grid .card{text-align:center}
