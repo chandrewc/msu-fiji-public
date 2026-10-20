@@ -15,5 +15,6 @@ async function renderSiteImages(){const{data,error}=await db.from('chapter_setti
 
 async function renderPhilanthropy(){if(page!=='philanthropy')return;const{data,error}=await db.from('chapter_settings').select('value').eq('key','philanthropy_events').maybeSingle();if(error||!Array.isArray(data?.value?.events))return;const host=document.querySelector('#main .philanthropy-events');if(!host)return;host.replaceChildren();for(const event of data.value.events){const card=el('article','card');const image=safePhoto(event.photo_url);if(image){const img=el('img','managed-site-photo');img.src=image;img.alt=event.title||'Philanthropy event';img.loading='lazy';card.append(img)}else{const key=(event.title||'event').replace(/[^a-z0-9]+/gi,'-').toLowerCase().replace(/^-|-$/g,'');const placeholder=el('div','photo-slot');placeholder.dataset.photoKey=key;placeholder.setAttribute('role','img');placeholder.setAttribute('aria-label',event.title||'Event photo');placeholder.append(el('span','','CHAPTER PHOTOGRAPHY'),el('small','',(event.title||'Event')+' · Photo coming soon'));card.append(placeholder)}card.append(el('h3','',event.title||'Event'),el('p','',event.description||''));host.append(card)}}
 
-await Promise.all([renderOfficers(),renderRecruitment(),renderIfc(),renderSpotlight(),renderPhilanthropy()]);
+await Promise.all([renderOfficers(),renderRecruitment(),renderIfc(),renderPhilanthropy()]);
 await renderSiteImages();
+await renderSpotlight();
