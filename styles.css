@@ -17,3 +17,36 @@
 @media(min-width:801px){.section:has(> .cards > .card:nth-child(5)) > .cards{grid-template-columns:repeat(6,minmax(0,1fr))}.section:has(> .cards > .card:nth-child(5)) > .cards > .card{grid-column:span 2}.section:has(> .cards > .card:nth-child(5)) > .cards > .card:nth-child(4){grid-column:2 / span 2}.section:has(> .cards > .card:nth-child(5)) > .cards > .card:nth-child(5){grid-column:4 / span 2}}
 @media(max-width:800px){.section:has(> .cards > .card:nth-child(5)) > .cards > .card:nth-child(4),.section:has(> .cards > .card:nth-child(5)) > .cards > .card:nth-child(5){grid-column:auto}}
 .philanthropy-events .photo-slot,.officer-grid .photo-slot{min-height:220px}.officer-grid .card{text-align:center}
+
+/* Mobile usability: navigation, touch targets, responsive content and overflow. */
+html,body{max-width:100%;overflow-x:clip}
+img,video,iframe{max-width:100%}
+.site-header .header-inner{min-width:0}
+.site-nav a,.menu-toggle{min-height:44px;display:inline-flex;align-items:center}
+@media(max-width:1050px){
+ .site-header .header-inner{flex-wrap:wrap;min-height:76px;position:relative}
+ .site-header .brand{min-width:0;max-width:calc(100% - 100px);white-space:normal}
+ .site-header .brand strong{overflow-wrap:anywhere}
+ .site-header .menu-toggle{display:inline-flex;align-items:center;justify-content:center;margin-left:auto}
+ .site-header .site-nav{display:none;flex-basis:100%;width:100%;flex-direction:column;align-items:stretch;gap:3px;padding:12px 0 5px;border-top:1px solid var(--border)}
+ .site-header .site-nav.open{display:flex}
+ .site-header .site-nav a{width:100%;padding:12px 14px;font-size:.95rem}
+}
+@media(max-width:700px){
+ .site-header .header-inner{padding:10px 4%}
+ .site-header .brand-crest{width:44px;height:44px}
+ .topline{letter-spacing:.08em}
+ .home-hero,.split,.cards,.footer-inner{grid-template-columns:minmax(0,1fr)}
+ .home-hero>* ,.split>* ,.cards>*{min-width:0}
+ .hero-copy h1,.page-banner h1{overflow-wrap:break-word;font-size:clamp(2.25rem,9vw,3.5rem)}
+ .hero-copy,.page-banner{padding:36px 22px}
+ .section,.welcome{padding-left:18px;padding-right:18px}
+ .section .cards{grid-template-columns:minmax(0,1fr)}
+ .section .cards .card{grid-column:auto!important}
+ .actions{display:flex;flex-wrap:wrap;gap:12px}
+ .actions .btn{max-width:100%;white-space:normal;text-align:center}
+ .feature-band{padding:35px 22px}
+ .footer-links{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .footer-links a{overflow-wrap:anywhere}
+}
+@media(max-width:390px){.footer-links{grid-template-columns:1fr}.brand small{letter-spacing:.04em}.topline{font-size:.52rem}}
