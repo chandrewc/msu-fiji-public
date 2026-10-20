@@ -1,4 +1,4 @@
 /* Shared editor and public renderer for original chapter pages. */
-export function textNodes(root){return [...root.querySelectorAll('h1,h2,h3,p,blockquote')].filter(el=>!el.querySelector('h1,h2,h3,p,blockquote'))}
-export function imageNodes(root){return [...root.querySelectorAll('img,.photo-slot')]}
+export function textNodes(root){return [...root.querySelectorAll('h1,h2,h3,p,blockquote')].filter(el=>!el.querySelector('h1,h2,h3,p,blockquote')&&!el.closest('.managed-sections'))}
+export function imageNodes(root){return [...root.querySelectorAll('img,.photo-slot')].filter(el=>!el.closest('.managed-sections'))}
 export function applyEdits(root,edits){const text=edits?.text||edits||{};textNodes(root).forEach((el,i)=>{if(typeof text[i]==='string')el.textContent=text[i]});imageNodes(root).forEach((el,i)=>{const url=edits?.images?.[i];if(typeof url!=='string'||!url.startsWith('https://'))return;if(el.tagName==='IMG'){el.src=url;return}const img=document.createElement('img');img.src=url;img.alt=el.getAttribute('aria-label')||'Chapter photograph';img.loading='lazy';img.className='original-uploaded-photo';el.replaceWith(img)})}
