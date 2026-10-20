@@ -74,3 +74,11 @@
 .format-help-card p{line-height:1.7}
 
 #original-edit-view.active{background:#500878;color:#fff}#save-original-btn,#publish-original-btn{background:#500878;color:#fff}#save-original-btn.has-changes{box-shadow:0 0 0 3px #dba900}#actual-site-frame[style*='pointer-events: auto']{border:2px solid #dba900}
+
+/* Original website WYSIWYG editing */
+#actual-site-panel.mobile-preview{max-width:390px;margin:0 auto}
+#actual-site-panel.mobile-preview #actual-site-frame{width:100%;min-height:700px}
+#actual-site-panel:not(.mobile-preview) #actual-site-frame{width:100%}
+.builder-shell #save-original-btn.has-changes{background:#dba900;color:#2b1934}
+.builder-shell .visual-inspector[hidden],.builder-shell .builder-add[hidden]{display:none!important}
+.builder-shell #original-edit-view.active{background:#500878;color:white}
