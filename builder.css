@@ -72,3 +72,5 @@
 .format-help-heading button{font-size:1.5rem;line-height:1;padding:5px 12px}
 .format-help-card code{background:#f1e9f5;color:#500878;padding:4px 7px;border-radius:4px}
 .format-help-card p{line-height:1.7}
+
+#original-edit-view.active{background:#500878;color:#fff}#save-original-btn,#publish-original-btn{background:#500878;color:#fff}#save-original-btn.has-changes{box-shadow:0 0 0 3px #dba900}#actual-site-frame[style*='pointer-events: auto']{border:2px solid #dba900}
