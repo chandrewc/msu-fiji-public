@@ -22,8 +22,8 @@
 html,body{max-width:100%;overflow-x:clip}
 img,video,iframe{max-width:100%}
 .site-header .header-inner{min-width:0}
-.site-nav a,.menu-toggle{min-height:44px;display:inline-flex;align-items:center}
-@media(max-width:1050px){
+.site-nav a{min-height:44px;display:inline-flex;align-items:center}.menu-toggle{min-height:44px;align-items:center;justify-content:center}
+@media(max-width:950px){
  .site-header .header-inner{flex-wrap:wrap;min-height:76px;position:relative}
  .site-header .brand{min-width:0;max-width:calc(100% - 100px);white-space:normal}
  .site-header .brand strong{overflow-wrap:anywhere}
@@ -50,3 +50,29 @@ img,video,iframe{max-width:100%}
  .footer-links a{overflow-wrap:anywhere}
 }
 @media(max-width:390px){.footer-links{grid-template-columns:1fr}.brand small{letter-spacing:.04em}.topline{font-size:.52rem}}
+
+/* Responsive layout consistency: desktop navigation stays desktop until 950px.
+   Previous shared touch-target rule accidentally made mobile toggle visible on desktop. */
+@media(min-width:951px){
+ .site-header .menu-toggle{display:none!important}
+ .site-header .header-inner{flex-wrap:nowrap}
+ .site-header .site-nav{display:flex!important;flex-direction:row;align-items:center;flex-basis:auto;width:auto;border-top:0;padding:0;gap:3px}
+ .site-header .site-nav a{width:auto;white-space:nowrap}
+ .home-hero{grid-template-columns:1.12fr .88fr}
+}
+@media(max-width:950px){
+ .site-header .menu-toggle{display:inline-flex}
+ .site-header .site-nav{display:none}
+ .site-header .site-nav.open{display:flex}
+ .site-header .site-nav a{display:flex}
+ .home-hero{grid-template-columns:minmax(0,1fr)}
+ .site-header .header-inner{gap:12px}
+}
+@media(max-width:700px){
+ .footer-inner{display:flex;flex-direction:column;gap:30px}
+ .feature-band{flex-direction:column;align-items:flex-start}
+ .feature-band .btn{flex-shrink:1}
+ .home-hero{min-height:0}
+ .hero-visual{min-height:260px}
+ .site-header .brand{max-width:calc(100% - 110px)}
+}
