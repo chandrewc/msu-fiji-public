@@ -56,3 +56,5 @@
 
 /* Keep actual-site preview locked to the page selected in the editor. */
 #actual-site-frame{pointer-events:none;user-select:none}
+
+#history-panel{border:1px solid #dac7e6;background:#fbf8fd;padding:16px;margin:12px 0 18px;border-radius:6px}#history-panel[hidden]{display:none!important}#history-list{display:grid;gap:10px;margin:12px 0}#history-list .history-entry{display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid #e9ddef;padding:8px 0}#history-list .history-entry span{font-size:.82rem}.formatting-hint{display:block;font-size:.7rem;color:#786d6e;margin-top:4px}
