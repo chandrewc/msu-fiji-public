@@ -28,7 +28,6 @@ const imageSlots=[
 ['brotherhood','brother-of-the-month-portrait','Brotherhood — Brother of the Month portrait'],
 ['philanthropy','cheese-fry-for-bin612','Philanthropy — Cheese Fry for Bin612'],
 ['philanthropy','space-jam','Philanthropy — Space Jam'],
-['leadership','executive-or-committee-portrait','Leadership — Officer portrait placeholder'],
 ['graduates','graduate-brothers','Graduates — Graduate brothers photo']
 ];
 async function setting(key){const{data,error}=await db.from('chapter_settings').select('value').eq('key',key).maybeSingle();if(error)throw error;return data?.value||{}}
