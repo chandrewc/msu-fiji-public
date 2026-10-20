@@ -82,3 +82,6 @@ img,video,iframe{max-width:100%}
 
 /* Photos placed through the original-layout editor retain responsive proportions. */
 .original-uploaded-photo{display:block;width:100%;height:auto;max-height:650px;object-fit:contain;border-radius:5px;margin:0 auto}
+
+/* Dynamic chapter cabinet and executive profiles */
+.chapter-officer-section .officer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:22px}.chapter-officer-section .officer-card{min-width:0}.chapter-officer-photo{width:100%;height:245px;object-fit:cover;border-radius:4px;margin-bottom:14px}.chapter-officer-section .officer-card h3{margin:8px 0}.chapter-officer-section .officer-card p{margin:0}.chapter-recruitment-dates p{white-space:pre-line}@media(max-width:650px){.chapter-officer-section .officer-grid{grid-template-columns:1fr 1fr;gap:12px}.chapter-officer-photo{height:175px}}@media(max-width:430px){.chapter-officer-section .officer-grid{grid-template-columns:1fr}}
