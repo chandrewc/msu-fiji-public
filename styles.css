@@ -79,3 +79,6 @@ img,video,iframe{max-width:100%}
 
 /* Recruitment chair portrait: full image, responsive alongside introduction. */
 .rush-chair{align-items:center}.rush-chair-photo{min-width:0}.rush-chair-photo img{display:block;width:100%;max-height:660px;object-fit:contain;object-position:center;background:#f1e9f5;border-radius:5px}.rush-chair a[href^='tel:']{color:#500878;font-weight:800}@media(max-width:950px){.rush-chair{grid-template-columns:minmax(0,1fr)}.rush-chair-photo img{max-height:540px}}
+
+/* Photos placed through the original-layout editor retain responsive proportions. */
+.original-uploaded-photo{display:block;width:100%;height:auto;max-height:650px;object-fit:contain;border-radius:5px;margin:0 auto}
