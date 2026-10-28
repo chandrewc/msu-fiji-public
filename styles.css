@@ -102,3 +102,16 @@ img,video,iframe{max-width:100%}
 .chapter-footer .footer-inner{margin:0 auto;grid-template-columns:minmax(220px,1.45fr) minmax(135px,.7fr) minmax(155px,.85fr) minmax(200px,.9fr);gap:clamp(22px,3vw,52px)}.chapter-footer .footer-links{gap:13px}.chapter-footer .footer-links strong,.chapter-footer .footer-support strong{margin-bottom:8px}.chapter-footer .copyright{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}.chapter-footer .footer-manager-link{color:#bba367;font-size:.8rem;font-weight:700;white-space:nowrap}@media(max-width:1000px){.chapter-footer .footer-inner{grid-template-columns:repeat(2,minmax(0,1fr))}.chapter-footer .footer-about{grid-column:auto}}@media(max-width:560px){.chapter-footer .footer-inner{grid-template-columns:1fr 1fr;gap:32px 18px}.chapter-footer .footer-about,.chapter-footer .footer-support{grid-column:1/-1}.chapter-footer .copyright{align-items:flex-start;flex-direction:column}}
 
 .chapter-officer-section .committee-card{text-align:left}.committee-card h4{margin:22px 0 8px}.committee-member-list{margin:0;padding-left:20px}.committee-member-list li{margin:6px 0;overflow-wrap:anywhere}
+
+/* Executive directory: variable-length rosters without stretched card grids. */
+.chapter-officer-section .executive-directory{grid-template-columns:minmax(0,1fr);gap:14px}
+.executive-directory .committee-card{display:grid;grid-template-columns:minmax(180px,1fr) minmax(0,2.5fr);gap:24px;padding:24px;align-items:start}
+.executive-directory .officer-details{min-width:0}.executive-directory .officer-details h3{margin:0 0 8px;overflow-wrap:anywhere;font-size:1.22rem}
+.executive-directory .officer-email{margin-top:10px;font-size:.88rem}
+.executive-directory .committee-roster{border-left:1px solid #e5dbe9;padding-left:24px;min-width:0}
+.executive-directory .committee-roster h4{margin:0 0 12px;color:var(--purple);font-size:.75rem;letter-spacing:.08em;text-transform:uppercase}
+.executive-directory .committee-member-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px 18px;list-style:none;padding:0;margin:0}
+.executive-directory .committee-member-list li{margin:0;font-size:.92rem;line-height:1.5}
+.executive-directory .commissioner-card{border-top:4px solid var(--purple);background:#f5eff9}
+@media(max-width:900px){.executive-directory .committee-member-list{grid-template-columns:repeat(2,minmax(0,1fr))}.executive-directory .committee-card{grid-template-columns:minmax(160px,1fr) minmax(0,1.8fr)}}
+@media(max-width:600px){.executive-directory .committee-card{grid-template-columns:minmax(0,1fr);gap:18px;padding:20px}.executive-directory .committee-roster{border-left:0;border-top:1px solid #e5dbe9;padding:18px 0 0}.executive-directory .committee-member-list{gap:8px 14px}}

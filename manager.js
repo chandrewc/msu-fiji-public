@@ -25,6 +25,12 @@ function officerEditor(item,category){
   const [emailLabel,email]=field('Email (optional)',item?.email||'','email');
   for(const label of [posLabel,nameLabel,orderLabel,emailLabel])grid.append(label);
   card.append(grid);
+  let committeeOnly;
+  if(!cabinet){
+    const option=element('label','committee-only-option');committeeOnly=element('input');committeeOnly.type='checkbox';committeeOnly.checked=!!item&&!item.name;committeeOnly.disabled=!editable();
+    option.append(committeeOnly,document.createTextNode('Committee only — no chair'));card.insertBefore(option,grid);
+    const updateChairFields=()=>{nameLabel.hidden=committeeOnly.checked;emailLabel.hidden=committeeOnly.checked};committeeOnly.onchange=updateChairFields;updateChairFields();
+  }
   let photo;
   if(cabinet){
     const [photoLabel,photoInput]=field('Photo URL',item?.photo_url,'url');photo=photoInput;grid.append(photoLabel);
@@ -48,13 +54,13 @@ function officerEditor(item,category){
   const actions=element('div','manager-actions');const save=element('button','','Save Officer');save.type='button';save.disabled=!editable();
   save.onclick=async()=>{
     if(!editable())return;
-    if(!pos.value.trim()||!name.value.trim())return status('Enter a position and brother name.');
-    if(!email.checkValidity())return status('Enter a valid email address or leave it blank.');
+    if(!pos.value.trim()||(!committeeOnly?.checked&&!name.value.trim()))return status('Enter a position and brother name, or select Committee only.');
+    if(!committeeOnly?.checked&&!email.checkValidity())return status('Enter a valid email address or leave it blank.');
     const memberNames=[...members.querySelectorAll('input')].map(input=>input.value.trim());
     if(memberNames.some(value=>!value))return status('Enter a name for each committee member or remove the empty row.');
     save.disabled=true;
     try{
-      const payload={category,position:pos.value.trim(),name:name.value.trim(),display_order:Number(order.value)||100,email:email.value.trim(),updated_at:new Date().toISOString()};
+      const payload={category,position:pos.value.trim(),name:committeeOnly?.checked?'':name.value.trim(),display_order:Number(order.value)||100,email:committeeOnly?.checked?'':email.value.trim(),updated_at:new Date().toISOString()};
       if(cabinet)payload.photo_url=photo.value.trim();else payload.committee_members=memberNames;
       const q=item?db.from('chapter_officers').update(payload).eq('id',item.id):db.from('chapter_officers').insert(payload);
       const{error}=await q;if(error)throw error;status('Officer saved and published.');await loadOfficers();

@@ -57,6 +57,12 @@ const assert=require('node:assert/strict');
  await host.getByLabel('Member name',{exact:true}).fill('New Member');
  await host.getByRole('button',{name:'Save Officer',exact:true}).click();
  assert.deepEqual(await page.evaluate(()=>saved.at(-1).committee_members),['New Member']);
+ await page.evaluate(()=>renderEditor('executive',{id:'chaplins',position:'Chaplins',name:'',committee_members:['Member']}));
+ assert.equal(await host.getByLabel('Committee only — no chair',{exact:true}).isChecked(),true);
+ assert.equal(await host.getByLabel('Chairman / committee head name',{exact:true}).isVisible(),false);
+ await host.getByRole('button',{name:'Save Officer',exact:true}).click();
+ assert.equal(await page.evaluate(()=>saved.at(-1).name),'');
+ assert.equal(await page.evaluate(()=>saved.at(-1).email),'');
  await page.evaluate(()=>{window.role='contributor';renderEditor('executive',{committee_members:['Member']})});
  assert.equal(await host.locator('input:enabled,button:enabled').count(),0);
  await page.evaluate(()=>{window.role='editor';renderEditor('cabinet',{name:'Cabinet Name',photo_url:'https://example.org/photo.jpg'})});
@@ -67,16 +73,24 @@ const assert=require('node:assert/strict');
  const card=publicCode.slice(publicCode.indexOf('function el('),publicCode.indexOf('async function renderRecruitment'));
  await page.setContent('<main id="main"><section><div id="executive-profiles"></div></section></main>');
  await page.addScriptTag({content:"{\n"+card+`\nfunction safePhoto(url){try{const u=new URL(url);return u.protocol==='https:'?u.href:null}catch{return null}}
- const page='leadership';const fixtures=[{category:'executive',position:'Service Chairman',name:'Chair Name',email:'chair@example.org',photo_url:'https://example.org/old.jpg',committee_members:['<img src=x onerror=alert(1)>','Member Two']},{category:'cabinet',name:'President Name',position:'President',photo_url:'https://example.org/president.jpg',email:'president@example.org'}];
+ const page='leadership';const fixtures=[{category:'executive',position:'Service Chairman',name:'Chair Name',email:'chair@example.org',photo_url:'https://example.org/old.jpg',committee_members:['<img src=x onerror=alert(1)>','Member Two']},{category:'executive',position:'Commissioner',name:'Commissioner Name',committee_members:[]},{category:'cabinet',name:'President Name',position:'President',photo_url:'https://example.org/president.jpg',email:'president@example.org'}];
  const db={from(){return {select(){return this},eq(){return this},order(){return this},then(resolve){resolve({data:fixtures,error:null})}}}};
  renderOfficers();\n}`});
- const executive=page.locator('.committee-card');
+ const executive=page.locator('.committee-card').filter({hasText:'Service Chairman'});
  assert.equal(await executive.locator('img').count(),0);
  assert.equal(await executive.locator('h3').innerText(),'Service Chairman');
  assert.equal(await executive.locator('li').count(),2);
  assert.equal(await executive.locator('a').getAttribute('href'),'mailto:chair@example.org');
  assert.equal(await page.locator('.chapter-officer-photo').count(),1);
  assert.equal(await page.locator('#executive-profiles').count(),0);
+ await page.addStyleTag({content:fs.readFileSync('styles.css','utf8')});
+ assert.equal(await page.locator('.executive-directory article').first().locator('h3').innerText(),'Commissioner');
+ for(const width of [1280,768,390]){
+   await page.setViewportSize({width,height:1000});
+   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+   const columns=await executive.evaluate(node=>getComputedStyle(node).gridTemplateColumns.split(' ').length);
+   assert.equal(columns,width<=600?1:2);
+ }
  console.log('PASS: committee add/edit/remove/create, validation, failure recovery, permissions, Cabinet fields, grouped public rendering and safe names.');
  }finally{await browser.close()}
 })().catch(error=>{console.error(error);process.exit(1)});
