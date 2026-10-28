@@ -20,7 +20,7 @@ function officerCard(officer){
 }
 async function renderOfficers(){
   if(page!=='leadership')return;
-  const{data,error}=await db.from('chapter_officers').select('category,position,name,photo_url,email,committee_members,display_order').eq('is_visible',true).order('display_order').order('position');
+  const{data,error}=await db.from('chapter_officers').select('category,position,name,photo_url,email,committee_members,display_order').order('display_order').order('position');
   if(error)return;
   const main=document.getElementById('main');if(!main)return;
   main.querySelector('#executive-profiles')?.closest('section')?.remove();
