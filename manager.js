@@ -13,7 +13,57 @@ function showPanel(name){for(const btn of document.querySelectorAll('[data-panel
 document.querySelectorAll('[data-panel]').forEach(btn=>btn.addEventListener('click',()=>showPanel(btn.dataset.panel)));
 async function loadOfficers(){const{data,error}=await db.from('chapter_officers').select('*').order('display_order').order('position');if(error)return status('Unable to load officers: '+error.message);officers=data||[];for(const category of ['cabinet','executive'])drawOfficers(category)}
 function drawOfficers(category){const host=$(category+'-list');host.replaceChildren();for(const item of officers.filter(o=>o.category===category))host.append(officerEditor(item,category));if(!host.childNodes.length)host.append(element('p','manager-note','No positions yet. Add one below.'));$(category+'-add').disabled=!editable()}
-function officerEditor(item,category){const card=element('article','manager-entry');const head=element('div','manager-entry-head');head.append(element('h3','',item?.position||'New position'));card.append(head);const grid=element('div','manager-fields');const [posLabel,pos]=field('Position',item?.position);const [nameLabel,name]=field('Brother name',item?.name);const [orderLabel,order]=field('Display order',String(item?.display_order??(officers.filter(x=>x.category===category).length+1)*10),'number');const [photoLabel,photo]=field('Photo URL',item?.photo_url,'url');const [emailLabel,email]=field('Email',item?.email||'','email');for(const label of [posLabel,nameLabel,orderLabel,photoLabel,emailLabel])grid.append(label);card.append(grid);const preview=element('img','manager-preview');preview.alt='Officer portrait';preview.hidden=!item?.photo_url;if(item?.photo_url)preview.src=item.photo_url;card.append(preview);photo.addEventListener('input',()=>{preview.hidden=!photo.value;if(photo.value)preview.src=photo.value});const uploadLabel=element('label','upload','Upload officer photo');const file=element('input');file.type='file';file.accept='image/png,image/jpeg,image/webp';file.disabled=!editable();file.onchange=async()=>{if(!file.files?.[0])return;file.disabled=true;try{status('Uploading officer photo…');photo.value=await upload(file.files[0],name.value||pos.value);preview.src=photo.value;preview.hidden=false;status('Photo uploaded. Save this officer to publish it.')}catch(e){status('Upload failed: '+e.message)}finally{file.disabled=!editable()}};uploadLabel.append(file);card.append(uploadLabel);const actions=element('div','manager-actions');const save=element('button','','Save Officer');save.disabled=!editable();save.onclick=async()=>{if(!pos.value.trim()||!name.value.trim())return status('Enter a position and brother name.');save.disabled=true;const payload={category,position:pos.value.trim(),name:name.value.trim(),display_order:Number(order.value)||100,photo_url:photo.value.trim(),email:email.value.trim(),updated_at:new Date().toISOString()};const q=item?db.from('chapter_officers').update(payload).eq('id',item.id):db.from('chapter_officers').insert(payload);const{error}=await q;if(error)status('Could not save officer: '+error.message);else{status('Officer saved and published.');await loadOfficers()}save.disabled=!editable()};actions.append(save);if(item){const remove=element('button','danger','Remove Position');remove.disabled=!editable();remove.onclick=async()=>{if(!confirm('Remove '+item.position+' from the public website?'))return;const{error}=await db.from('chapter_officers').delete().eq('id',item.id);if(error)return status(error.message);status('Position removed.');await loadOfficers()};actions.append(remove)}card.append(actions);return card}
+function officerEditor(item,category){
+  const cabinet=category==='cabinet';
+  const card=element('article','manager-entry');
+  const head=element('div','manager-entry-head');
+  head.append(element('h3','',item?.position||'New position'));card.append(head);
+  const grid=element('div','manager-fields');
+  const [posLabel,pos]=field('Position',item?.position);
+  const [nameLabel,name]=field(cabinet?'Brother name':'Chairman / committee head name',item?.name);
+  const [orderLabel,order]=field('Display order',String(item?.display_order??(officers.filter(x=>x.category===category).length+1)*10),'number');
+  const [emailLabel,email]=field('Email (optional)',item?.email||'','email');
+  for(const label of [posLabel,nameLabel,orderLabel,emailLabel])grid.append(label);
+  card.append(grid);
+  let photo;
+  if(cabinet){
+    const [photoLabel,photoInput]=field('Photo URL',item?.photo_url,'url');photo=photoInput;grid.append(photoLabel);
+    const preview=element('img','manager-preview');preview.alt='Officer portrait';preview.hidden=!item?.photo_url;if(item?.photo_url)preview.src=item.photo_url;card.append(preview);
+    photo.addEventListener('input',()=>{preview.hidden=!photo.value;if(photo.value)preview.src=photo.value});
+    const uploadLabel=element('label','upload','Upload officer photo');const file=element('input');file.type='file';file.accept='image/png,image/jpeg,image/webp';file.disabled=!editable();
+    file.onchange=async()=>{if(!editable()||!file.files?.[0])return;file.disabled=true;try{status('Uploading officer photo…');photo.value=await upload(file.files[0],name.value||pos.value);preview.src=photo.value;preview.hidden=false;status('Photo uploaded. Save this officer to publish it.')}catch(e){status('Upload failed: '+e.message)}finally{file.disabled=!editable()}};
+    uploadLabel.append(file);card.append(uploadLabel);
+  }
+  const members=element('div','committee-members');
+  if(!cabinet){
+    card.append(element('h4','','Committee members'),element('p','manager-note','Names only. Add, edit, or remove members below, then Save Officer to publish.'),members);
+    const addMemberRow=value=>{
+      const row=element('div','committee-member-row');const [label,input]=field('Member name',value);input.disabled=!editable();
+      const remove=element('button','danger','Remove Member');remove.type='button';remove.disabled=!editable();remove.onclick=()=>{if(editable())row.remove()};row.append(label,remove);members.append(row);
+    };
+    for(const member of item?.committee_members||[])addMemberRow(member);
+    const add=element('button','secondary','+ Add Committee Member');add.type='button';add.disabled=!editable();add.onclick=()=>{if(editable())addMemberRow('')};card.append(add);
+  }
+  grid.querySelectorAll('input').forEach(input=>input.disabled=!editable());
+  const actions=element('div','manager-actions');const save=element('button','','Save Officer');save.type='button';save.disabled=!editable();
+  save.onclick=async()=>{
+    if(!editable())return;
+    if(!pos.value.trim()||!name.value.trim())return status('Enter a position and brother name.');
+    if(!email.checkValidity())return status('Enter a valid email address or leave it blank.');
+    const memberNames=[...members.querySelectorAll('input')].map(input=>input.value.trim());
+    if(memberNames.some(value=>!value))return status('Enter a name for each committee member or remove the empty row.');
+    save.disabled=true;
+    try{
+      const payload={category,position:pos.value.trim(),name:name.value.trim(),display_order:Number(order.value)||100,email:email.value.trim(),updated_at:new Date().toISOString()};
+      if(cabinet)payload.photo_url=photo.value.trim();else payload.committee_members=memberNames;
+      const q=item?db.from('chapter_officers').update(payload).eq('id',item.id):db.from('chapter_officers').insert(payload);
+      const{error}=await q;if(error)throw error;status('Officer saved and published.');await loadOfficers();
+    }catch(error){status('Could not save officer: '+error.message)}finally{save.disabled=!editable()}
+  };
+  actions.append(save);
+  if(item){const remove=element('button','danger','Remove Position');remove.type='button';remove.disabled=!editable();remove.onclick=async()=>{if(!editable()||!confirm('Remove '+item.position+' and its committee members from the public website?'))return;try{const{error}=await db.from('chapter_officers').delete().eq('id',item.id);if(error)throw error;status('Position removed.');await loadOfficers()}catch(error){status('Could not remove position: '+error.message)}};actions.append(remove)}
+  card.append(actions);return card;
+}
 for(const category of ['cabinet','executive'])$(category+'-add').onclick=()=>{$(category+'-list').prepend(officerEditor(null,category));$(category+'-list').firstElementChild.scrollIntoView({behavior:'smooth',block:'nearest'})};
 async function loadRecruitment(){const{data,error}=await db.from('chapter_settings').select('value').eq('key','recruitment').maybeSingle();if(error)return status('Unable to load recruitment: '+error.message);recruitment=data?.value||{};const form=$('recruitment-form');for(const key of ['chair','year','phone','photo_url','dates','details'])form.elements.namedItem(key).value=recruitment[key]||'';const img=$('recruitment-photo-preview');img.hidden=!recruitment.photo_url;if(recruitment.photo_url)img.src=recruitment.photo_url;form.querySelector('button[type=submit]').disabled=!editable();$('recruitment-photo').disabled=!editable()}
 $('recruitment-photo').onchange=async()=>{const file=$('recruitment-photo').files?.[0];if(!file)return;try{status('Uploading recruitment photo…');const url=await upload(file,$('recruitment-form').elements.namedItem('chair').value||'Recruitment chair');$('recruitment-form').elements.namedItem('photo_url').value=url;$('recruitment-photo-preview').src=url;$('recruitment-photo-preview').hidden=false;status('Photo uploaded. Save recruitment information to publish.')}catch(e){status(e.message)}};
