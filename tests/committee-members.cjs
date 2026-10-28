@@ -84,12 +84,13 @@ const assert=require('node:assert/strict');
  assert.equal(await page.locator('.chapter-officer-photo').count(),1);
  assert.equal(await page.locator('#executive-profiles').count(),0);
  await page.addStyleTag({content:fs.readFileSync('styles.css','utf8')});
+ assert.equal(await page.locator('.executive-directory').evaluate(node=>node.classList.contains('cards')),false);
  assert.equal(await page.locator('.executive-directory article').first().locator('h3').innerText(),'Commissioner');
  for(const width of [1280,768,390]){
    await page.setViewportSize({width,height:1000});
    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
-   const columns=await executive.evaluate(node=>getComputedStyle(node).gridTemplateColumns.split(' ').length);
-   assert.equal(columns,width<=600?1:2);
+   const columns=await page.locator('.executive-directory').evaluate(node=>getComputedStyle(node).gridTemplateColumns.split(' ').length);
+   assert.equal(columns,width<=650?1:2);
  }
  console.log('PASS: committee add/edit/remove/create, validation, failure recovery, permissions, Cabinet fields, grouped public rendering and safe names.');
  }finally{await browser.close()}
