@@ -5,10 +5,13 @@ function el(tag,cls='',value){const node=document.createElement(tag);if(cls)node
 function officerCard(officer){
   const cabinet=officer.category==='cabinet';
   const commissioner=!cabinet&&/^commissioner$/i.test(officer.position.trim());
-  const card=el('article','card officer-card'+(cabinet?'':' committee-card')+(commissioner?' commissioner-card':''));
+  const card=el('article','card officer-card'+(cabinet?'':' committee-card')+(commissioner?' commissioner-card':'')+(cabinet&&/^president$/i.test(officer.position.trim())?' cabinet-president':''));
   const details=el('div','officer-details');
   if(cabinet&&safePhoto(officer.photo_url)){const image=el('img','chapter-officer-photo');image.src=safePhoto(officer.photo_url);image.alt=officer.name;image.loading='lazy';card.append(image)}
-  if(cabinet)details.append(el('h3','',officer.name),el('p','',officer.position));
+  if(cabinet){
+    if(!safePhoto(officer.photo_url)){const initials=el('span','cabinet-monogram',officer.name.trim().split(/\s+/).filter(Boolean).map(part=>part[0]).filter((_,i,all)=>i===0||i===all.length-1).join(''));initials.setAttribute('aria-hidden','true');card.append(initials)}
+    details.append(el('p','cabinet-position',officer.position),el('h3','',officer.name));
+  }
   else{details.append(el('h3','',officer.position));if(officer.name)details.append(el('p','committee-chair',officer.name))}
   if(officer.email){const email=el('a','officer-email',officer.email);email.href='mailto:'+officer.email;details.append(email)}
   card.append(details);

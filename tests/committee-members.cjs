@@ -89,10 +89,13 @@ const assert=require('node:assert/strict');
  for(const width of [1280,768,390]){
    await page.setViewportSize({width,height:1000});
    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
-   const columns=await page.locator('.executive-directory').evaluate(node=>Number(getComputedStyle(node).columnCount));
+   const columns=await page.locator('.executive-directory').evaluate(node=>getComputedStyle(node).gridTemplateColumns.split(' ').length);
    assert.equal(columns,width<=650?1:width<=1050?2:3);
  }
  assert.equal(await page.locator('.featured-committee li').count(),15);
+ assert.equal(await page.locator('.cabinet-president').count(),1);
+ assert.equal(await page.locator('.cabinet-section').evaluate(node=>node.getBoundingClientRect().top<document.querySelector('.executive-section').getBoundingClientRect().top),true);
+
  console.log('PASS: committee add/edit/remove/create, validation, failure recovery, permissions, Cabinet fields, grouped public rendering and safe names.');
  }finally{await browser.close()}
 })().catch(error=>{console.error(error);process.exit(1)});
