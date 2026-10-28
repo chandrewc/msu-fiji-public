@@ -5,7 +5,7 @@ function el(tag,cls='',value){const node=document.createElement(tag);if(cls)node
 function officerCard(officer){
   const cabinet=officer.category==='cabinet';
   const commissioner=!cabinet&&/^commissioner$/i.test(officer.position.trim());
-  const card=el('article','card officer-card'+(cabinet?'':' committee-card')+(commissioner?' commissioner-card':'')+(cabinet&&/^president$/i.test(officer.position.trim())?' cabinet-president':''));
+  const card=el('article','card officer-card'+(cabinet?'':' committee-card')+(commissioner?' commissioner-card':'')+(!cabinet&&!officer.name?.trim()?' committee-only-card':'')+(cabinet&&/^president$/i.test(officer.position.trim())?' cabinet-president':''));
   const details=el('div','officer-details');
   if(cabinet&&safePhoto(officer.photo_url)){const image=el('img','chapter-officer-photo');image.src=safePhoto(officer.photo_url);image.alt=officer.name;image.loading='lazy';card.append(image)}
   if(cabinet){
@@ -13,7 +13,8 @@ function officerCard(officer){
     details.append(el('p','cabinet-position',officer.position),el('h3','',officer.name));
   }
   else{details.append(el('h3','',officer.position));if(officer.name)details.append(el('p','committee-chair',officer.name))}
-  if(officer.email){const email=el('a','officer-email',officer.email);email.href='mailto:'+officer.email;details.append(email)}
+  const addresses=[...new Set((officer.email||'').trim().split(/\s+and\s+|[,;\s]+/i).filter(Boolean))];
+  for(const address of addresses){const email=el('a','officer-email',address);email.href='mailto:'+address;details.append(email)}
   card.append(details);
   if(!cabinet&&officer.committee_members?.length){const group=el('div','committee-roster');group.append(el('h4','','Committee members'));const members=el('ul','committee-member-list'+(officer.committee_members.length>=6?' large-roster':''));for(const name of officer.committee_members)members.append(el('li','',name));group.append(members);card.append(group)}
   return card;

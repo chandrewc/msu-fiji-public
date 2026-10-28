@@ -22,7 +22,9 @@ function officerEditor(item,category){
   const [posLabel,pos]=field('Position',item?.position);
   const [nameLabel,name]=field(cabinet?'Brother name':'Chairman / committee head name',item?.name);
   const [orderLabel,order]=field('Display order',String(item?.display_order??(officers.filter(x=>x.category===category).length+1)*10),'number');
-  const [emailLabel,email]=field('Email (optional)',item?.email||'','email');
+  const [emailLabel,email]=field('Chair email(s) (optional)',item?.email||'','email');
+  email.multiple=true;email.placeholder='first@example.com, second@example.com';
+  emailLabel.append(element('small','manager-note','Separate addresses with commas, semicolons, or “and”.'));
   for(const label of [posLabel,nameLabel,orderLabel,emailLabel])grid.append(label);
   card.append(grid);
   let committeeOnly;
@@ -55,7 +57,9 @@ function officerEditor(item,category){
   save.onclick=async()=>{
     if(!editable())return;
     if(!pos.value.trim()||(!committeeOnly?.checked&&!name.value.trim()))return status('Enter a position and brother name, or select Committee only.');
-    if(!committeeOnly?.checked&&!email.checkValidity())return status('Enter a valid email address or leave it blank.');
+    const addresses=[...new Set(email.value.trim().split(/\s+and\s+|[,;\s]+/i).filter(Boolean))];
+    email.value=addresses.join(', ');
+    if(!committeeOnly?.checked&&!email.checkValidity())return status('Enter valid email addresses separated by commas, or leave the field blank.');
     const memberNames=[...members.querySelectorAll('input')].map(input=>input.value.trim());
     if(memberNames.some(value=>!value))return status('Enter a name for each committee member or remove the empty row.');
     save.disabled=true;

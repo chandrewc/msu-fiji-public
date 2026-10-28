@@ -145,3 +145,5 @@ img,video,iframe{max-width:100%}
 @media(max-width:650px){.executive-directory{grid-template-columns:minmax(0,1fr)}.cabinet-section{padding:26px 16px}.cabinet-grid>.officer-card{padding:24px 14px}.cabinet-grid .officer-details h3{font-size:1.05rem}.cabinet-grid .officer-details .cabinet-position{font-size:.62rem}.cabinet-monogram{width:60px;height:60px;font-size:1.4rem}.executive-section{padding:20px 14px;border-radius:12px}.executive-section .committee-card{padding:22px}.executive-section .featured-committee>.committee-card{padding:22px}.featured-committee .committee-member-list{grid-template-columns:minmax(0,1fr);gap:8px}.commissioner-spotlight{margin-bottom:20px}}
 
 @media(min-width:651px) and (max-width:1050px){.executive-directory>.committee-card:last-child:nth-child(odd){grid-column:1/-1;width:calc(50% - 9px);justify-self:center}}
+
+.executive-directory .committee-only-card .officer-details{min-height:0}.executive-section .committee-only-card .committee-roster{margin-top:10px;padding-top:14px}
