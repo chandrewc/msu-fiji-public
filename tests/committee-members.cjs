@@ -73,7 +73,7 @@ const assert=require('node:assert/strict');
  const card=publicCode.slice(publicCode.indexOf('function el('),publicCode.indexOf('async function renderRecruitment'));
  await page.setContent('<main id="main"><section><div id="executive-profiles"></div></section></main>');
  await page.addScriptTag({content:"{\n"+card+`\nfunction safePhoto(url){try{const u=new URL(url);return u.protocol==='https:'?u.href:null}catch{return null}}
- const page='leadership';const fixtures=[{category:'executive',position:'Service Chairman',name:'Chair Name',email:'chair@example.org',photo_url:'https://example.org/old.jpg',committee_members:['<img src=x onerror=alert(1)>','Member Two']},{category:'executive',position:'Commissioner',name:'Commissioner Name',committee_members:[]},{category:'cabinet',name:'President Name',position:'President',photo_url:'https://example.org/president.jpg',email:'president@example.org'}];
+ const page='leadership';const fixtures=[{category:'executive',position:'Service Chairman',name:'Chair Name',email:'chair@example.org',photo_url:'https://example.org/old.jpg',committee_members:['<img src=x onerror=alert(1)>','Member Two']},{category:'executive',position:'Recruitment',name:'Rush Chair',committee_members:Array.from({length:15},(_,i)=>'Member '+i)},{category:'executive',position:'Commissioner',name:'Commissioner Name',committee_members:[]},{category:'cabinet',name:'President Name',position:'President',photo_url:'https://example.org/president.jpg',email:'president@example.org'}];
  const db={from(){return {select(){return this},eq(){return this},order(){return this},then(resolve){resolve({data:fixtures,error:null})}}}};
  renderOfficers();\n}`});
  const executive=page.locator('.committee-card').filter({hasText:'Service Chairman'});
@@ -85,13 +85,14 @@ const assert=require('node:assert/strict');
  assert.equal(await page.locator('#executive-profiles').count(),0);
  await page.addStyleTag({content:fs.readFileSync('styles.css','utf8')});
  assert.equal(await page.locator('.executive-directory').evaluate(node=>node.classList.contains('cards')),false);
- assert.equal(await page.locator('.executive-directory article').first().locator('h3').innerText(),'Commissioner');
+ assert.equal(await page.locator('.executive-section article').first().locator('h3').innerText(),'Commissioner');
  for(const width of [1280,768,390]){
    await page.setViewportSize({width,height:1000});
    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
-   const columns=await page.locator('.executive-directory').evaluate(node=>getComputedStyle(node).gridTemplateColumns.split(' ').length);
-   assert.equal(columns,width<=650?1:2);
+   const columns=await page.locator('.executive-directory').evaluate(node=>Number(getComputedStyle(node).columnCount));
+   assert.equal(columns,width<=650?1:width<=1050?2:3);
  }
+ assert.equal(await page.locator('.featured-committee li').count(),15);
  console.log('PASS: committee add/edit/remove/create, validation, failure recovery, permissions, Cabinet fields, grouped public rendering and safe names.');
  }finally{await browser.close()}
 })().catch(error=>{console.error(error);process.exit(1)});
