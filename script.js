@@ -1,4 +1,4 @@
-const network="https://chandrewc.github.io/msu-fiji-database/";
+const network="https://brothers.msufiji.com/";
 const links=[["Home","index.html","home"],["About","about.html","about"],["Recruitment","recruitment.html","recruitment"],["Brotherhood","brotherhood.html","brotherhood"],["Philanthropy","philanthropy.html","philanthropy"],["Leadership","leadership.html","leadership"],["Graduates","graduates.html","graduates"],["Contact","contact.html","contact"]];
 const page=document.body.dataset.page||"home";
 const a=(label,url,cls="btn")=>'<a class="'+cls+'" href="'+url+'">'+label+'</a>';
