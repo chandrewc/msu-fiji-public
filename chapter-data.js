@@ -62,3 +62,18 @@ async function renderImpact(){if(page!=='philanthropy')return;const{data,error}=
 await Promise.all([renderOfficers(),renderRecruitment(),renderIfc(),renderPhilanthropy(),renderImpact(),renderContact()]);
 await renderSiteImages();
 await renderSpotlight();
+
+
+async function renderAlumniSpotlight(){
+ if(page!=='alumni-spotlight')return;
+ const host=document.getElementById('alumni-feature');if(!host)return;
+ const {data,error}=await db.from('chapter_settings').select('value').eq('key','alumni_spotlight').maybeSingle();
+ if(error){host.replaceChildren(el('p','','The alumni story is temporarily unavailable. Please check back soon.'));return}
+ const v=data?.value;if(!v?.name?.trim())return;
+ const copy=el('div','alumni-copy');copy.append(el('p','eyebrow',v.eyebrow||'SIGMA MU ALUMNUS'),el('h2','',v.name));
+ if(v.class_year)copy.append(el('p','alumni-class','Class of '+v.class_year));
+ if(v.headline)copy.append(el('h3','',v.headline));
+ for(const paragraph of (v.description||'').split(/\n\s*\n/).filter(Boolean))copy.append(el('p','alumni-story',paragraph));
+ host.replaceChildren(copy);const url=safePhoto(v.photo_url);if(url){const img=el('img','alumni-portrait');img.src=url;img.alt=v.photo_alt||v.name+' portrait';host.prepend(img);host.classList.add('has-photo')}
+}
+renderAlumniSpotlight().catch(()=>{});
