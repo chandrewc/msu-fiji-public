@@ -1,3 +1,5 @@
+> November 3, 2026: The Brother Network now supports an explicit live-mode configuration; activation is pending its live Stripe key and webhook setup. Public Giving remains test-only. See [Brother Network live setup](LIVE_STRIPE.md) for the current shared webhook and member-checkout configuration. The public guest checkout below is unchanged.
+
 # Giving and Alumni Spotlight
 
 Giving is at `/giving.html`, with Persistence Fund and Parents Fund designations. Each gift is one time; the Parents Fund is an annual appeal, not an automatically recurring charge. Fund descriptions are maintained in `script.js`. No tax-deductibility claim is made.
