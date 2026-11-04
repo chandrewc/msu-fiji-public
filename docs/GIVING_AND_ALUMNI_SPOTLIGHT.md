@@ -1,4 +1,4 @@
-> November 3, 2026: The Brother Network now supports an explicit live-mode configuration; activation is pending its live Stripe key and webhook setup. Public Giving remains test-only. See [Brother Network live setup](LIVE_STRIPE.md) for the current shared webhook and member-checkout configuration. The public guest checkout below is unchanged.
+> November 3, 2026: Brother Network live Stripe donations are activated and verified. Public Giving remains test-only. See [Brother Network live setup](LIVE_STRIPE.md) for the current shared webhook and member-checkout configuration. The public guest checkout below is unchanged.
 
 # Giving and Alumni Spotlight
 
