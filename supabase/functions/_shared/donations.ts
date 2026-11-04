@@ -48,3 +48,4 @@ export async function liveAccountReady(stripe, config) {
   const account = await stripe.accounts.retrieve();
   return account.id === config.accountId && account.charges_enabled === true;
 }
+
