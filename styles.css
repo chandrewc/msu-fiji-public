@@ -159,3 +159,6 @@ img,video,iframe{max-width:100%}
 
 /* Keep the featured president photo in a centered portrait frame. */
 .cabinet-grid .cabinet-president .chapter-officer-photo{display:block;width:min(100%,240px);height:auto;aspect-ratio:7/8;max-height:none;object-fit:cover;object-position:center bottom;margin:0 auto 24px}
+
+/* Elected offices accompany their founding brothers in the colony roster. */
+.founder-person>div{min-width:0}.founder-person .founder-office{margin:5px 0 0;font-size:.78rem;line-height:1.4;color:var(--purple);font-weight:650}
